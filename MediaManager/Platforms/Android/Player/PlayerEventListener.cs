@@ -1,12 +1,15 @@
 ﻿using Android.Runtime;
 using Com.Google.Android.Exoplayer2;
+using Com.Google.Android.Exoplayer2.Metadata;
 using Com.Google.Android.Exoplayer2.Source;
 using Com.Google.Android.Exoplayer2.Trackselection;
-using static Com.Google.Android.Exoplayer2.IPlayer;
+using Com.Google.Android.Exoplayer2.Video;
+
+//using static Com.Google.Android.Exoplayer2.IPlayer;
 
 namespace MediaManager.Platforms.Android.Player
 {
-    public class PlayerEventListener : Java.Lang.Object, IEventListener
+    public class PlayerEventListener : Java.Lang.Object, Com.Google.Android.Exoplayer2.IPlayer.IListener // IEventListener
     {
         public PlayerEventListener()
         {
@@ -142,6 +145,75 @@ namespace MediaManager.Platforms.Android.Player
         public void OnPlaybackSuppressionReasonChanged(int playbackSuppressionReason)
         {
             OnPlaybackSuppressionReasonChangedImpl?.Invoke(playbackSuppressionReason);
+        }
+
+
+        public void OnPositionDiscontinuity(IPlayer.PositionInfo oldPosition, IPlayer.PositionInfo newPosition, int reason)
+        {
+
+        }
+
+
+        //public void OnTracksChanged(Com.Google.Android.Exoplayer2.Tracks tracks)
+        //{
+        //}
+
+
+        public void OnMediaItemTransition(MediaItem MediaItem, int reason)
+        {
+        }
+
+        public void OnPlaybackStateChanged(int state)
+        {
+        }
+
+        public void OnPlayWhenReadyChanged(bool playWhenReady, int reason)
+        {
+        }
+
+        public void OnEvents(IPlayer Player, IPlayer.Events Events)
+        {
+        }
+
+        public void OnIsLoadingChanged(bool changed)
+        {
+        }
+
+        public void OnStaticMetadataChanged(System.Collections.Generic.IList<Metadata> metadataList)
+        {
+        }
+
+        public void OnMediaMetadataChanged(MediaMetadata mediaMetadata)
+        {
+        }
+
+        public void OnMetadata(Metadata metadata)
+        {
+
+        }
+
+        public void OnDeviceVolumeChanged(int Volume, bool Muted)
+        {
+        }
+
+        public void OnAvailableCommandsChanged(global::Com.Google.Android.Exoplayer2.IPlayer.Commands? availableCommands)
+        {
+        }
+
+        //Video related methods
+        public void OnSurfaceSizeChanged(int width, int hight)
+        {
+
+        }
+
+        public void OnVideoSizeChanged(VideoSize size)
+        {
+
+        }
+
+        public void OnRenderedFirstFrame()
+        {
+
         }
     }
 }

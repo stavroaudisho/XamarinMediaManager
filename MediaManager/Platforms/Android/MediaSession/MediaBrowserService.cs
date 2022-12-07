@@ -8,6 +8,7 @@ using AndroidX.Core.Content;
 using AndroidX.Media;
 using AndroidX.Media.Session;
 using Com.Google.Android.Exoplayer2.UI;
+using Com.Google.Android.Exoplayer2.Util;
 using MediaManager.Platforms.Android.Media;
 
 namespace MediaManager.Platforms.Android.MediaSession
@@ -50,7 +51,7 @@ namespace MediaManager.Platforms.Android.MediaSession
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Console.WriteLine(ex);
             }
 
             MediaManager.StateChanged += MediaManager_StateChanged;
@@ -99,13 +100,8 @@ namespace MediaManager.Platforms.Android.MediaSession
 
         protected virtual void PrepareNotificationManager()
         {
+
             MediaDescriptionAdapter = new MediaDescriptionAdapter();
-            PlayerNotificationManager = Com.Google.Android.Exoplayer2.UI.PlayerNotificationManager.CreateWithNotificationChannel(
-                this,
-                ChannelId,
-                Resource.String.exo_download_notification_channel_name,
-                ForegroundNotificationId,
-                MediaDescriptionAdapter);
 
             //Needed for enabling the notification as a mediabrowser.
             NotificationListener = new NotificationListener();
@@ -127,11 +123,22 @@ namespace MediaManager.Platforms.Android.MediaSession
                 }
             };
 
-            PlayerNotificationManager.SetFastForwardIncrementMs((long)MediaManager.StepSizeForward.TotalMilliseconds);
-            PlayerNotificationManager.SetRewindIncrementMs((long)MediaManager.StepSizeBackward.TotalMilliseconds);
+            if (Build.VERSION.SdkInt >= BuildVersionCodes.O)
+            {
+                var channel = new NotificationChannel(ChannelId, "MediaManager", NotificationImportance.Low);
+                var nm = (NotificationManager)GetSystemService(NotificationService);
+                nm.CreateNotificationChannel(channel);
+            }
 
-            //TODO: not sure why this is broken? Maybe in the binding
-            //PlayerNotificationManager.SetNotificationListener(NotificationListener);
+            PlayerNotificationManager = new Com.Google.Android.Exoplayer2.UI.PlayerNotificationManager.Builder(
+                    this,
+                    ForegroundNotificationId,
+                    ChannelId,
+                    MediaDescriptionAdapter)
+                .Build();
+
+            //PlayerNotificationManager.SetFastForwardIncrementMs((long)MediaManager.StepSizeForward.TotalMilliseconds);
+            //PlayerNotificationManager.SetRewindIncrementMs((long)MediaManager.StepSizeBackward.TotalMilliseconds);
 
             PlayerNotificationManager.SetMediaSessionToken(SessionToken);
             //PlayerNotificationManager.SetOngoing(true);
