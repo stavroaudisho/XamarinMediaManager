@@ -172,29 +172,41 @@ namespace MediaManager.Platforms.Android.MediaSession
             //ServiceCompat.StopForeground(this, ServiceCompat.StopForegroundDetach);
 
             StopForeground(true);
-            MediaManager.StateChanged -= MediaManager_StateChanged;
+            if (MediaManager != null)
+            {
+                MediaManager.StateChanged -= MediaManager_StateChanged;
 
-            (MediaManager.Notification as Notifications.NotificationManager).Player = null;
+                if (MediaManager.Notification != null)
+                    ((Notifications.NotificationManager)MediaManager.Notification).Player = null;
+            }
 
-            MediaDescriptionAdapter.Dispose();
-            MediaDescriptionAdapter = null;
+            if (MediaDescriptionAdapter != null)
+            {
+                MediaDescriptionAdapter.Dispose();
+                MediaDescriptionAdapter = null;
+            }
 
-            // Service is being killed, so make sure we release our resources
+            if (PlayerNotificationManager != null)
+            {
+                // Service is being killed, so make sure we release our resources
+                PlayerNotificationManager.SetPlayer(null);
+                PlayerNotificationManager.Dispose();
+                PlayerNotificationManager = null;
+            }
 
-            //TODO: Enable again
-            //PlayerNotificationManager.SetNotificationListener(null);
+            if (NotificationListener != null)
+            {
+                NotificationListener.Dispose();
+                NotificationListener = null;
+            }
 
-            PlayerNotificationManager.SetPlayer(null);
-            PlayerNotificationManager.Dispose();
-            PlayerNotificationManager = null;
-
-            NotificationListener.Dispose();
-            NotificationListener = null;
-
-            MediaManager.MediaSession.Active = false;
-            MediaManager.MediaSession.Release();
-            //MediaManager.MediaSession.Dispose();
-            MediaManager.MediaSession = null;
+            if (MediaManager != null && MediaManager.MediaSession != null)
+            {
+                MediaManager.MediaSession.Active = false;
+                MediaManager.MediaSession.Release();
+                //MediaManager.MediaSession.Dispose();
+                MediaManager.MediaSession = null;
+            }
 
             IsForeground = false;
             base.OnDestroy();
