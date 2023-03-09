@@ -4,6 +4,7 @@ using Android.OS;
 using Android.Runtime;
 using Android.Support.V4.Media;
 using Android.Support.V4.Media.Session;
+using AndroidX.Core.App;
 using AndroidX.Core.Content;
 using AndroidX.Media;
 using AndroidX.Media.Session;
@@ -135,6 +136,9 @@ namespace MediaManager.Platforms.Android.MediaSession
                     ForegroundNotificationId,
                     ChannelId,
                     MediaDescriptionAdapter)
+                .SetNotificationListener(NotificationListener)
+                .SetChannelNameResourceId(Resource.String.XamarinMediaManagerName)
+                .SetChannelDescriptionResourceId(Resource.String.XamarinMediaManagerDescription)
                 .Build();
 
             //PlayerNotificationManager.SetFastForwardIncrementMs((long)MediaManager.StepSizeForward.TotalMilliseconds);
@@ -145,6 +149,7 @@ namespace MediaManager.Platforms.Android.MediaSession
             PlayerNotificationManager.SetUsePlayPauseActions(MediaManager.Notification.ShowPlayPauseControls);
             PlayerNotificationManager.SetUseNavigationActions(MediaManager.Notification.ShowNavigationControls);
             PlayerNotificationManager.SetSmallIcon(MediaManager.NotificationIconResource);
+            PlayerNotificationManager.SetPriority(NotificationCompat.PriorityLow);
 
             //Must be called to start the connection
             (MediaManager.Notification as Notifications.NotificationManager).Player = MediaManager.Player;
